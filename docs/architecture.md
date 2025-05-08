@@ -21,7 +21,7 @@
 
 ## Folder Structure
 ```
-├── src/main/java/com/devtiro/blog/
+├── src/main/java/me/nayanm/blog/
 │   ├── controllers
 │   ├── services
 │   ├── repositories
