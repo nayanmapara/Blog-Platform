@@ -2,6 +2,7 @@ package me.nayanm.blog.mappers;
 
 import me.nayanm.blog.domain.PostStatus;
 import me.nayanm.blog.domain.dtos.CategoryDto;
+import me.nayanm.blog.domain.dtos.CreateCategoryRequest;
 import me.nayanm.blog.domain.entities.Category;
 import me.nayanm.blog.domain.entities.Post;
 import org.mapstruct.Mapper;
@@ -16,6 +17,8 @@ public interface CategoryMapper {
 
     @Mapping(target = "postCount", source = "posts", qualifiedByName = "calculatePostCount")
     CategoryDto toDto(Category category);
+
+    Category toEntity(CreateCategoryRequest createCategoryRequest);
 
     @Named( "calculatePostCount")
     default long calculatePostCount(List<Post> posts){

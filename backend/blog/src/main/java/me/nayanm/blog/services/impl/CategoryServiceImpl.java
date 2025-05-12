@@ -19,4 +19,13 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll();
     }
 
+    @Override
+    public Category createCategory(Category category) {
+        if(categoryRepository.existsByNameIgnoreCase(category.getName())){
+            throw new IllegalArgumentException("Category with name '" + category.getName() + "' already exists");
+        }
+
+        return categoryRepository.save(category);
+    }
+
 }
