@@ -2,7 +2,7 @@ package me.nayanm.blog.controllers;
 
 import lombok.RequiredArgsConstructor;
 import me.nayanm.blog.domain.dtos.CreateTagsRequest;
-import me.nayanm.blog.domain.dtos.TagResponse;
+import me.nayanm.blog.domain.dtos.TagDto;
 import me.nayanm.blog.domain.entities.Tag;
 import me.nayanm.blog.mappers.TagMapper;
 import me.nayanm.blog.services.TagService;
@@ -22,18 +22,18 @@ public class TagController {
     private final TagMapper tagMapper;
 
     @GetMapping
-    public ResponseEntity<List<TagResponse>> getAllTags(){
+    public ResponseEntity<List<TagDto>> getAllTags(){
         List<Tag> tags = tagService.getTags();
-        List<TagResponse> tagResponses = tags.stream().map(tagMapper::toTagResponse).toList();
-        return ResponseEntity.ok(tagResponses);
+        List<TagDto> tagResponse = tags.stream().map(tagMapper::toTagResponse).toList();
+        return ResponseEntity.ok(tagResponse);
     }
 
     @PostMapping
-    public ResponseEntity<List<TagResponse>> createTags(@RequestBody CreateTagsRequest createTagsRequest){
+    public ResponseEntity<List<TagDto>> createTags(@RequestBody CreateTagsRequest createTagsRequest){
         List<Tag> savedTags = tagService.createTags(createTagsRequest.getNames());
-        List<TagResponse> createdTagResponses = savedTags.stream().map(tagMapper::toTagResponse).toList();
+        List<TagDto> createdTagResponse = savedTags.stream().map(tagMapper::toTagResponse).toList();
         return new ResponseEntity<>(
-                createdTagResponses,
+                createdTagResponse,
                 HttpStatus.CREATED
         );
     }
