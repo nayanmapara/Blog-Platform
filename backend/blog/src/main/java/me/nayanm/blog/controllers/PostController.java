@@ -1,15 +1,17 @@
 package me.nayanm.blog.controllers;
 
 import lombok.RequiredArgsConstructor;
+import me.nayanm.blog.domain.CreatePostRequest;
+import me.nayanm.blog.domain.dtos.CreatePostRequestDto;
 import me.nayanm.blog.domain.dtos.PostDto;
 import me.nayanm.blog.domain.entities.Post;
+import me.nayanm.blog.domain.entities.User;
 import me.nayanm.blog.mappers.PostMapper;
 import me.nayanm.blog.services.PostService;
+import me.nayanm.blog.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class PostController {
     private final PostService postService;
     private final PostMapper postMapper;
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<List<PostDto>> getAllPosts(
@@ -28,5 +31,27 @@ public class PostController {
         List<Post> posts = postService.getAllPosts(categoryId, tagId);
         List<PostDto> postDtos = posts.stream().map(postMapper::toDto).toList();
         return ResponseEntity.ok(postDtos);
+    }
+
+    @GetMapping(path = "/drafts")
+    public ResponseEntity<List<PostDto>> getDrafts(@RequestAttribute UUID userId){
+        User loggedInUser = userService.getUserById(userId);
+        List<Post> draftPosts = postService.getDraftPosts(loggedInUser);
+        List<PostDto> postDtos = draftPosts.stream().map(postMapper::toDto).toList();
+        return ResponseEntity.ok(postDtos);
+    }
+
+    @PostMapping
+    public ResponseEntity<PostDto> createPost(
+            @RequestBody CreatePostRequestDto createPostRequestDto,
+            @RequestAttribute UUID userId){
+
+        User loggedInUser = userService.getUserById(userId);
+        CreatePostRequest createPostRequest = postMapper.toCreatePostRequest(createPostRequestDto);
+        Post createdPost = postService.createPost(loggedInUser, createPostRequest);
+        PostDto createdPostDto = postMapper.toDto(createdPost);
+
+        return new ResponseEntity<>(createdPostDto, HttpStatus.CREATED);
+
     }
 }
