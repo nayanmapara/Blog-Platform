@@ -4,6 +4,7 @@ import me.nayanm.blog.domain.PostStatus;
 import me.nayanm.blog.domain.entities.Category;
 import me.nayanm.blog.domain.entities.Post;
 import me.nayanm.blog.domain.entities.Tag;
+import me.nayanm.blog.domain.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,5 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findAllByStatusAndCategory(PostStatus status, Category category);
     List<Post> findAllByStatusAndTagsContaining(PostStatus status, Tag tags);
     List<Post> findAllByStatus(PostStatus status);
+    List<Post> findAllByAuthorAndStatus(User author, PostStatus status);
 }
