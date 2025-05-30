@@ -1,5 +1,7 @@
 package me.nayanm.blog.mappers;
 
+import me.nayanm.blog.domain.CreatePostRequest;
+import me.nayanm.blog.domain.dtos.CreatePostRequestDto;
 import me.nayanm.blog.domain.dtos.PostDto;
 import me.nayanm.blog.domain.entities.Post;
 import org.mapstruct.Mapper;
@@ -14,4 +16,5 @@ public interface PostMapper {
     @Mapping(target = "author", source = "author")
     PostDto toDto(Post post);
 
+    CreatePostRequest toCreatePostRequest(CreatePostRequestDto createPostRequestDto);
 }
