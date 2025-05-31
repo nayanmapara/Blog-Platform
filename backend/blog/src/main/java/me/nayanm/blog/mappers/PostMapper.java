@@ -21,5 +21,5 @@ public interface PostMapper {
 
     CreatePostRequest toCreatePostRequest(CreatePostRequestDto createPostRequestDto);
 
-    UpdatePostRequest toUpdatePostRequest(@Valid UpdatePostRequestDto updatePostRequestDto);
+    UpdatePostRequest toUpdatePostRequest(UpdatePostRequestDto updatePostRequestDto);
 }
