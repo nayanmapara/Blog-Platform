@@ -1,9 +1,12 @@
 package me.nayanm.blog.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.nayanm.blog.domain.CreatePostRequest;
+import me.nayanm.blog.domain.UpdatePostRequest;
 import me.nayanm.blog.domain.dtos.CreatePostRequestDto;
 import me.nayanm.blog.domain.dtos.PostDto;
+import me.nayanm.blog.domain.dtos.UpdatePostRequestDto;
 import me.nayanm.blog.domain.entities.Post;
 import me.nayanm.blog.domain.entities.User;
 import me.nayanm.blog.mappers.PostMapper;
@@ -53,5 +56,15 @@ public class PostController {
 
         return new ResponseEntity<>(createdPostDto, HttpStatus.CREATED);
 
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<PostDto> updatePost(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdatePostRequestDto updatePostRequestDto){
+        UpdatePostRequest updatePostRequest = postMapper.toUpdatePostRequest(updatePostRequestDto);
+        Post updatedPost = postService.updatePost(id, updatePostRequest);
+        PostDto updatedPostDto = postMapper.toDto(updatedPost);
+        return ResponseEntity.ok(updatedPostDto);
     }
 }
