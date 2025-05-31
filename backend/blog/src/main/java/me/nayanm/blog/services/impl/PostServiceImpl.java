@@ -94,7 +94,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new EntityNotFoundException("Post with id " + id + " not found"));
 
         existingPost.setTitle(updatePostRequest.getTitle());
-        String postContent = existingPost.getContent();
+        String postContent = updatePostRequest.getContent();
         existingPost.setContent(postContent);
         existingPost.setStatus(updatePostRequest.getStatus());
         existingPost.setReadingTime(calculateReadingTime(updatePostRequest.getContent()));
