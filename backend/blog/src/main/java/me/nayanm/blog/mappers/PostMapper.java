@@ -1,6 +1,7 @@
 package me.nayanm.blog.mappers;
 
 import me.nayanm.blog.domain.CreatePostRequest;
+import me.nayanm.blog.domain.UpdatePostRequest;
 import me.nayanm.blog.domain.dtos.CreatePostRequestDto;
 import me.nayanm.blog.domain.dtos.PostDto;
 import me.nayanm.blog.domain.entities.Post;
@@ -17,4 +18,6 @@ public interface PostMapper {
     PostDto toDto(Post post);
 
     CreatePostRequest toCreatePostRequest(CreatePostRequestDto createPostRequestDto);
+
+    UpdatePostRequest toUpdatePostRequest(UpdatePostRequest updatePostRequestDto);
 }
