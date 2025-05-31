@@ -1,9 +1,11 @@
 package me.nayanm.blog.mappers;
 
+import jakarta.validation.Valid;
 import me.nayanm.blog.domain.CreatePostRequest;
 import me.nayanm.blog.domain.UpdatePostRequest;
 import me.nayanm.blog.domain.dtos.CreatePostRequestDto;
 import me.nayanm.blog.domain.dtos.PostDto;
+import me.nayanm.blog.domain.dtos.UpdatePostRequestDto;
 import me.nayanm.blog.domain.entities.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,5 +21,5 @@ public interface PostMapper {
 
     CreatePostRequest toCreatePostRequest(CreatePostRequestDto createPostRequestDto);
 
-    UpdatePostRequest toUpdatePostRequest(UpdatePostRequest updatePostRequestDto);
+    UpdatePostRequest toUpdatePostRequest(@Valid UpdatePostRequestDto updatePostRequestDto);
 }
