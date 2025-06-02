@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 class BlogApplicationTests {
 
 	@Test
-	@Disabled("Disabled until test config is added")
 	void contextLoads() {
 	}
 
