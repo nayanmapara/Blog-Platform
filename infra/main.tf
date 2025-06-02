@@ -11,11 +11,11 @@ resource "random_string" "rand" {
 
 resource "azurerm_resource_group" "rg" {
   name     = "blog-platform-rg"
-  location = "East US"
+  location = "Canada Central"
 }
 
 resource "azurerm_postgresql_flexible_server" "db" {
-  name                   = "blogplatformdb${random_string.rand.result}"
+  name                   = "blogplatformdb"
   resource_group_name    = azurerm_resource_group.rg.name
   location               = azurerm_resource_group.rg.location
   administrator_login    = var.db_username
