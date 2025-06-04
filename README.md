@@ -37,8 +37,23 @@ npm run dev
 ```bash
 docker-compose up
 ```
-
 _Access DB Admin UI at: http://localhost:8888_
+
+### Environment Variables
+
+The following environment variables must be set for the application to run correctly:
+
+#### Backend
+- `SPRING_DATASOURCE_URL`: JDBC URL for PostgreSQL (e.g., `jdbc:postgresql://localhost:5432/blogdb`)
+- `SPRING_DATASOURCE_USERNAME`: PostgreSQL database username
+- `SPRING_DATASOURCE_PASSWORD`: PostgreSQL database password
+- `JWT_SECRET`: Secret key for signing JWT tokens
+
+#### Frontend (if using .env.local)
+- `VITE_API_BASE_URL`: Base URL for the backend API (e.g., `http://localhost:8080/api`)
+
+Make sure to configure these variables in your local environment or deployment pipeline (e.g., GitHub Secrets or Azure App Settings).
+"""
 
 
 ## Deployment (Azure via Terraform)
