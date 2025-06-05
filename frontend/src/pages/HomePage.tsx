@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Card, 
-  CardHeader, 
+import {
+  Card,
+  CardHeader,
   CardBody,
-  Tabs, 
+  Tabs,
   Tab,
 } from '@nextui-org/react';
 import { apiService, Post, Category, Tag } from '../services/apiService';
@@ -17,7 +17,7 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState("createdAt,desc");
-  const [selectedCategory, setSelectedCategory] = useState<string|undefined>(undefined);
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
   const [selectedTag, setSelectedTag] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -25,9 +25,9 @@ const HomePage: React.FC = () => {
       try {
         setLoading(true);
         const [postsResponse, categoriesResponse, tagsResponse] = await Promise.all([
-          apiService.getPosts({      
-            categoryId: selectedCategory != undefined ? selectedCategory : undefined,
-            tagId: selectedTag || undefined
+          apiService.getPosts({
+            categoryId: selectedCategory,
+            tagId: selectedTag
           }),
           apiService.getCategories(),
           apiService.getTags()
@@ -47,62 +47,60 @@ const HomePage: React.FC = () => {
     fetchData();
   }, [page, sortBy, selectedCategory, selectedTag]);
 
-  const handleCategoryChange = (categoryId: string|undefined) => {
-    if("all" === categoryId){
-      setSelectedCategory(undefined)
-    } else {
-      setSelectedCategory(categoryId);
-    }
+  const handleCategoryChange = (categoryId: string | undefined) => {
+    setSelectedCategory(categoryId === 'all' ? undefined : categoryId);
   };
 
   return (
     <div className="max-w-6xl mx-auto px-4 space-y-6">
-      <Card className="mb-6 px-2">
-        <CardHeader>
-          <h1 className="text-2xl font-bold">Blog Posts</h1>
-        </CardHeader>
-        <CardBody>
-          <div className="flex flex-col gap-4">                     
-            <Tabs 
-              selectedKey={selectedCategory} 
-              onSelectionChange={(key) => {
-                handleCategoryChange(key as string)
-              }}
-              variant="underlined"
-              classNames={{
-                tabList: "gap-6",
-                cursor: "w-full bg-primary",
-              }}
-            >
-              <Tab key="all" title="All Posts" />
-              {categories.map((category) => (
-                <Tab 
-                  key={category.id} 
-                  title={`${category.name} (${category.postCount})`}
-                />
-              ))}
-            </Tabs>
+      <div className="bg-white/60 dark:bg-black/30 backdrop-blur-md shadow-2xl rounded-3xl border border-violet-200 dark:border-violet-500 p-6 transition-all">
+        <div className="mb-6">
+          <h1 className="text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-white drop-shadow-sm">
+            ✨ Discover Posts
+          </h1>
+          <p className="text-neutral-600 dark:text-neutral-300 mt-2">
+            Browse the latest content by category or tag.
+          </p>
+        </div>
 
-            {tags.length > 0 && (
-              <div className="flex gap-2 flex-wrap">
-                {tags.map((tag) => (
-                  <button
-                    key={tag.id}
-                    onClick={() => setSelectedTag(selectedTag == tag.id ? undefined : tag.id)}
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      selectedTag === tag.id
-                        ? 'bg-primary text-white'
-                        : 'bg-default-100 hover:bg-default-200'
-                    }`}
-                  >
-                    {tag.name} ({tag.postCount})
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </CardBody>
-      </Card>
+        <Tabs
+        selectedKey={selectedCategory}
+        onSelectionChange={(key) => handleCategoryChange(key as string)}
+        radius="full"
+        variant="solid"
+        classNames={{
+          tabList: "gap-3 bg-white/30 dark:bg-white/10 p-2 rounded-full backdrop-blur-md",
+          tab: "px-4 py-1.5 text-sm font-medium rounded-full hover:bg-white/50 dark:hover:bg-white/20",
+          tabContent: "group-data-[selected=true]:text-white text-neutral-600 dark:text-white",
+          cursor: "bg-gradient-to-r from-violet-500 to-indigo-500 shadow-md",
+        }}
+      >
+
+          <Tab key="all" title="All" />
+          {categories.map((cat) => (
+            <Tab key={cat.id} title={`${cat.name} (${cat.postCount})`} />
+          ))}
+        </Tabs>
+
+        <div className="flex flex-wrap gap-2 mt-5">
+          {tags.map((tag) => (
+            <button
+              key={tag.id}
+              onClick={() =>
+                setSelectedTag(tag.id === selectedTag ? undefined : tag.id)
+              }
+              className={`text-sm px-3 py-1 rounded-full border transition-all backdrop-blur-md
+                ${
+                  selectedTag === tag.id
+                    ? 'bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow-md'
+                    : 'bg-white/80 text-neutral-700 hover:bg-white border-violet-200 dark:bg-white/10 dark:text-white'
+                }`}
+            >
+              #{tag.name}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <PostList
         posts={posts}
