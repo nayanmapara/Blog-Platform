@@ -1,1 +1,0 @@
-window.env = { VITE_API_BASE_URL: "https://blog-platform-api.azurewebsites.net/" };
