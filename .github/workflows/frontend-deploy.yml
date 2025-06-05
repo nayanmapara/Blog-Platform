@@ -26,9 +26,8 @@ jobs:
           cd frontend
           npm install
 
-      - name: Inject VITE_API_BASE_URL and build frontend
+      - name: Build frontend
         run: |
-          echo "window.env = { VITE_API_BASE_URL: '${{ secrets.VITE_API_BASE_URL }}' };" > frontend/dist/env.js
           cd frontend
           npm run build
 
@@ -37,17 +36,3 @@ jobs:
         with:
           name: frontend-dist
           path: frontend/dist
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Apply - Frontend Infra Only
-        working-directory: ./infra-frontend
-        run: |
-          terraform init
-          terraform apply -auto-approve
-        env:
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
