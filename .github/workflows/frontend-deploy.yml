@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         run: |
           cd frontend
           npm install
@@ -31,8 +31,14 @@ jobs:
           cd frontend
           npm run build
 
-      - name: Upload frontend build artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload to Azure Static Website
+        uses: azure/cli@v1
         with:
-          name: frontend-dist
-          path: frontend/dist
+          inlineScript: |
+            az storage blob upload-batch \
+              --account-name blogfrontend \
+              --destination '$web' \
+              --source frontend/dist \
+              --overwrite
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
