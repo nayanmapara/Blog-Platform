@@ -1,15 +1,14 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
+export default defineConfig(() => {
 
   return {
     plugins: [react()],
     server: {
       proxy: {
         '/api': {
-          target: "https://blog-platform-api.azurewebsites.net/", //env.VITE_API_BASE_URL,
+          target: "https://blog-platform-api.azurewebsites.net/",
           changeOrigin: true,
           secure: false,
         },
