@@ -144,7 +144,7 @@ const PostForm: React.FC<PostFormProps> = ({
   };
 
   const handleHeadingSelect = (level: number) => {
-    editor?.chain().focus().toggleHeading({ level }).run();
+    editor?.chain().focus().toggleHeading({ level: level as 1 | 2 | 3 | 4 | 5 | 6 }).run();
   };
 
   const suggestedTags = availableTags
