@@ -37,6 +37,9 @@ jobs:
           name: frontend-dist
           path: frontend/dist
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
       - name: Terraform Apply (Frontend)
         working-directory: ./infra
         run: |
