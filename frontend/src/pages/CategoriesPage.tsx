@@ -53,42 +53,26 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ isAuthenticated }) => {
   };
 
   const handleAddEdit = async () => {
-    if (!newCategoryName.trim()) {
-      return;
-    }
+    if (!newCategoryName.trim()) return;
 
     try {
       setIsSubmitting(true);
       if (editingCategory) {
-        await apiService.updateCategory(
-          editingCategory.id,
-          newCategoryName.trim()
-        );
+        await apiService.updateCategory(editingCategory.id, newCategoryName.trim());
       } else {
         await apiService.createCategory(newCategoryName.trim());
       }
       await fetchCategories();
       handleModalClose();
     } catch (err) {
-      setError(
-        `Failed to ${
-          editingCategory ? "update" : "create"
-        } category. Please try again.`
-      );
+      setError(`Failed to ${editingCategory ? "update" : "create"} category.`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (category: Category) => {
-    if (
-      !window.confirm(
-        `Are you sure you want to delete the category "${category.name}"?`
-      )
-    ) {
-      return;
-    }
-
+    if (!window.confirm(`Delete the category "${category.name}"?`)) return;
     try {
       setLoading(true);
       await apiService.deleteCategory(category.id);
@@ -119,15 +103,16 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ isAuthenticated }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4">
-      <Card>
+    <div className="max-w-6xl mx-auto px-4 space-y-6">
+      <Card className="bg-white/60 dark:bg-black/30 backdrop-blur-md shadow-2xl border border-violet-200 dark:border-violet-500 rounded-3xl">
         <CardHeader className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Categories</h1>
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">📂 Categories</h1>
           {isAuthenticated && (
             <Button
               color="primary"
               startContent={<Plus size={16} />}
               onClick={openAddModal}
+              className="bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow-md hover:scale-105 transition-transform"
             >
               Add Category
             </Button>
@@ -145,7 +130,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ isAuthenticated }) => {
             aria-label="Categories table"
             isHeaderSticky
             classNames={{
-              wrapper: "max-h-[600px]",
+              wrapper: "max-h-[600px] rounded-xl overflow-hidden",
             }}
           >
             <TableHeader>
@@ -185,11 +170,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ isAuthenticated }) => {
                             color="danger"
                             size="sm"
                             onClick={() => handleDelete(category)}
-                            isDisabled={
-                              category?.postCount
-                                ? category.postCount > 0
-                                : false
-                            }
+                            isDisabled={(category.postCount ?? 0) > 0}
                           >
                             <Trash2 size={16} />
                           </Button>
@@ -206,7 +187,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ isAuthenticated }) => {
         </CardBody>
       </Card>
 
-      <Modal isOpen={isOpen} onClose={handleModalClose}>
+      <Modal isOpen={isOpen} onClose={handleModalClose} backdrop="blur" className="rounded-xl shadow-xl">
         <ModalContent>
           <ModalHeader>
             {editingCategory ? "Edit Category" : "Add Category"}
@@ -227,6 +208,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ isAuthenticated }) => {
               color="primary"
               onClick={handleAddEdit}
               isLoading={isSubmitting}
+              className="bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow-md"
             >
               {editingCategory ? "Update" : "Add"}
             </Button>
