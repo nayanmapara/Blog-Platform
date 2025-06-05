@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import NavBar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
 import EditPostPage from "./pages/EditPostPage";
@@ -13,7 +14,7 @@ import { AuthProvider, useAuth } from "./components/AuthContext";
 // Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
@@ -23,47 +24,78 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function AppContent() {
   const { isAuthenticated, logout, user } = useAuth();
+  const [isDark, setIsDark] = useState(() =>
+    localStorage.getItem("theme") === "dark"
+  );
+
+  const toggleTheme = () => setIsDark((prev) => !prev);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDark]);
 
   return (
     <BrowserRouter>
-      <NavBar 
+      <NavBar
         isAuthenticated={isAuthenticated}
-        userProfile={user ? {
-          name: user.name,
-          avatar: undefined // Add avatar support if needed
-        } : undefined}
+        userProfile={
+          user
+            ? {
+                name: user.name,
+                avatar: undefined,
+              }
+            : undefined
+        }
         onLogout={logout}
+        isDark={isDark}
+        toggleTheme={toggleTheme}
       />
       <main className="container mx-auto py-6">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route 
-            path="/posts/new" 
+          <Route
+            path="/posts/new"
             element={
               <ProtectedRoute>
                 <EditPostPage />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route path="/posts/:id" element={<PostPage isAuthenticated={isAuthenticated}/>} />
-          <Route 
-            path="/posts/:id/edit" 
+          <Route
+            path="/posts/:id"
+            element={<PostPage isAuthenticated={isAuthenticated} />}
+          />
+          <Route
+            path="/posts/:id/edit"
             element={
               <ProtectedRoute>
                 <EditPostPage />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route path="/categories" element={<CategoriesPage isAuthenticated={isAuthenticated}/>} />
-          <Route path="/tags" element={<TagsPage isAuthenticated={isAuthenticated}/>} />
-          <Route 
-            path="/posts/drafts" 
+          <Route
+            path="/categories"
+            element={<CategoriesPage isAuthenticated={isAuthenticated} />}
+          />
+          <Route
+            path="/tags"
+            element={<TagsPage isAuthenticated={isAuthenticated} />}
+          />
+          <Route
+            path="/posts/drafts"
             element={
               <ProtectedRoute>
                 <DraftsPage />
               </ProtectedRoute>
-            } 
+            }
           />
         </Routes>
       </main>
