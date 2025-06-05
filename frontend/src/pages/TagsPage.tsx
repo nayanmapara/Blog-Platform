@@ -54,10 +54,7 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
   };
 
   const handleAddTags = async () => {
-    if (newTags.length === 0) {
-      return;
-    }
-
+    if (newTags.length === 0) return;
     try {
       setIsSubmitting(true);
       await apiService.createTags(newTags);
@@ -71,12 +68,7 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
   };
 
   const handleDelete = async (tag: Tag) => {
-    if (
-      !window.confirm(`Are you sure you want to delete the tag "${tag.name}"?`)
-    ) {
-      return;
-    }
-
+    if (!window.confirm(`Delete the tag "${tag.name}"?`)) return;
     try {
       setLoading(true);
       await apiService.deleteTag(tag.id);
@@ -112,15 +104,16 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4">
-      <Card>
+    <div className="max-w-6xl mx-auto px-4 space-y-6">
+      <Card className="bg-white/60 dark:bg-black/30 backdrop-blur-md shadow-2xl border border-violet-200 dark:border-violet-500 rounded-3xl">
         <CardHeader className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Tags</h1>
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">🏷️ Tags</h1>
           {isAuthenticated && (
             <Button
               color="primary"
               startContent={<Plus size={16} />}
               onClick={onOpen}
+              className="bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow-md hover:scale-105 transition-transform"
             >
               Add Tags
             </Button>
@@ -138,7 +131,7 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
             aria-label="Tags table"
             isHeaderSticky
             classNames={{
-              wrapper: "max-h-[600px]",
+              wrapper: "max-h-[600px] rounded-xl overflow-hidden",
             }}
           >
             <TableHeader>
@@ -152,7 +145,11 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
             >
               {tags.map((tag) => (
                 <TableRow key={tag.id}>
-                  <TableCell>{tag.name}</TableCell>
+                  <TableCell>
+                    <Chip variant="flat" color="primary" className="capitalize">
+                      {tag.name}
+                    </Chip>
+                  </TableCell>
                   <TableCell>{tag.postCount || 0}</TableCell>
                   <TableCell>
                     {isAuthenticated ? (
@@ -169,9 +166,7 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
                           color="danger"
                           size="sm"
                           onClick={() => handleDelete(tag)}
-                          isDisabled={
-                            tag?.postCount ? tag.postCount > 0 : false
-                          }
+                          isDisabled={tag?.postCount ? tag.postCount > 0 : false}
                         >
                           <Trash2 size={16} />
                         </Button>
@@ -187,14 +182,14 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
         </CardBody>
       </Card>
 
-      <Modal isOpen={isOpen} onClose={handleModalClose}>
+      <Modal isOpen={isOpen} onClose={handleModalClose} backdrop="blur" className="rounded-xl shadow-xl">
         <ModalContent>
           <ModalHeader>Add Tags</ModalHeader>
           <ModalBody>
             <div className="space-y-4">
               <Input
                 label="Enter tags"
-                placeholder="Type and press Enter or comma to add tags"
+                placeholder="Type and press Enter or comma"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagInputKeyDown}
@@ -222,6 +217,7 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
               onClick={handleAddTags}
               isLoading={isSubmitting}
               isDisabled={newTags.length === 0}
+              className="bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow-md"
             >
               Add Tags
             </Button>
