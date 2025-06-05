@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: env.VITE_API_BASE_URL,
+          target: "https://blog-platform-api.azurewebsites.net/", //env.VITE_API_BASE_URL,
           changeOrigin: true,
           secure: false,
         },
