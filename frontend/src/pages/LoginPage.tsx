@@ -1,99 +1,93 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { apiService } from '../services/apiService';
-import { useAuth } from '../components/AuthContext';
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Input,
+  Button,
+  Divider,
+} from "@nextui-org/react";
+import { LogIn } from "lucide-react";
+import { apiService } from "../services/apiService";
+import { useAuth } from "../components/AuthContext"; 
 
-const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+const LoginPage: React.FC = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as any)?.from?.pathname || "/";
+
+  const [email, setEmail] = useState("user@test.com");
+  const [password, setPassword] = useState("password");
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
+    setIsSubmitting(true);
+    setError(null);
 
     try {
-      const response = await apiService.login({ email, password });
-      login(response);
-      navigate('/');
-    } catch (err: any) {
-      setError(err.message || 'Failed to login. Please try again.');
-    } finally {
-      setIsLoading(false);
+      await login(email, password);
+      navigate(from, { replace: true });
+    } catch {
+      setError("Invalid credentials. Please try again.");
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
-            </div>
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <Card
+        className="w-full max-w-md bg-white/60 dark:bg-black/40 backdrop-blur-lg
+                   shadow-[0_0_24px_4px_rgba(139,92,246,0.45)]
+                   border border-violet-300 dark:border-violet-600 rounded-3xl"
+      >
+        <CardHeader className="justify-center py-6">
+          <h1 className="text-3xl font-bold text-center text-neutral-900 dark:text-white">
+            🔐 Welcome Back
+          </h1>
+        </CardHeader>
 
+        <Divider />
+
+        <CardBody as="form" onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="flex">
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">{error}</h3>
-                </div>
-              </div>
+            <div className="text-red-500 bg-red-100 px-4 py-2 rounded-lg text-sm">
+              {error}
             </div>
           )}
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-        </form>
-      </div>
+          <Input
+            label="Email"
+            placeholder="you@example.com"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            isRequired
+          />
+
+          <Input
+            label="Password"
+            placeholder="••••••••"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            isRequired
+          />
+
+          <Button
+            type="submit"
+            color="primary"
+            isLoading={isSubmitting}
+            startContent={<LogIn size={16} />}
+            className="bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow-md hover:scale-105 transition-transform"
+          >
+            Log In
+          </Button>
+        </CardBody>
+      </Card>
     </div>
   );
 };
