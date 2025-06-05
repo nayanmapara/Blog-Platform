@@ -3,23 +3,6 @@ variable "subscription_id" {
   type        = string
 }
 
-variable "db_username" {
-  description = "PostgreSQL admin username"
-  type        = string
-}
-
-variable "db_password" {
-  description = "PostgreSQL admin password"
-  type        = string
-  sensitive   = true
-}
-
-variable "jwt_secret" {
-  description = "JWT secret key"
-  type        = string
-  sensitive   = true
-}
-
 variable "vite_api_base_url" {
   description = "The base URL of the backend API for the frontend to consume"
   type        = string
