@@ -9,7 +9,7 @@ import {
   Divider,
 } from "@nextui-org/react";
 import { LogIn } from "lucide-react";
-import { apiService } from "../services/apiService";
+// import { apiService } from "../services/apiService";
 import { useAuth } from "../components/AuthContext"; 
 
 const LoginPage: React.FC = () => {

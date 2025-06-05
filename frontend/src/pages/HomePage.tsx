@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Card,
-  CardHeader,
-  CardBody,
+  // Card,
+  // CardHeader,
+  // CardBody,
   Tabs,
   Tab,
 } from '@nextui-org/react';
