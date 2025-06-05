@@ -1,4 +1,9 @@
-import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig, AxiosError } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+  AxiosError,
+} from 'axios';
 
 // Types
 export interface LoginRequest {
@@ -51,7 +56,6 @@ export interface UpdatePostRequest extends CreatePostRequest {
   id: string;
 }
 
-
 export interface ApiError {
   status: number;
   message: string;
@@ -63,7 +67,7 @@ export interface ApiError {
 
 export enum PostStatus {
   DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED'
+  PUBLISHED = 'PUBLISHED',
 }
 
 class ApiService {
@@ -71,14 +75,15 @@ class ApiService {
   private static instance: ApiService;
 
   private constructor() {
+    const baseURL = "https://blog-platform-api.azurewebsites.net/api";
+
     this.api = axios.create({
-      baseURL: '/api/v1',
+      baseURL,
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
 
-    // Add request interceptor for authentication
     this.api.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
         const token = localStorage.getItem('token');
@@ -87,12 +92,9 @@ class ApiService {
         }
         return config;
       },
-      (error: AxiosError) => {
-        return Promise.reject(error);
-      }
+      (error: AxiosError) => Promise.reject(error)
     );
 
-    // Add response interceptor for error handling
     this.api.interceptors.response.use(
       (response: AxiosResponse) => response,
       (error: AxiosError) => {
@@ -118,13 +120,16 @@ class ApiService {
     }
     return {
       status: 500,
-      message: 'An unexpected error occurred'
+      message: 'An unexpected error occurred',
     };
   }
 
-  // Auth endpoints
+  // --- Auth endpoints ---
   public async login(credentials: LoginRequest): Promise<AuthResponse> {
-    const response: AxiosResponse<AuthResponse> = await this.api.post('/auth/login', credentials);
+    const response = await this.api.post<AuthResponse>(
+      '/auth/login',
+      credentials
+    );
     localStorage.setItem('token', response.data.token);
     return response.data;
   }
@@ -133,27 +138,27 @@ class ApiService {
     localStorage.removeItem('token');
   }
 
-  // Posts endpoints
+  // --- Posts ---
   public async getPosts(params: {
     categoryId?: string;
     tagId?: string;
   }): Promise<Post[]> {
-    const response: AxiosResponse<Post[]> = await this.api.get('/posts', { params });
+    const response = await this.api.get<Post[]>('/posts', { params });
     return response.data;
   }
 
   public async getPost(id: string): Promise<Post> {
-    const response: AxiosResponse<Post> = await this.api.get(`/posts/${id}`);
+    const response = await this.api.get<Post>(`/posts/${id}`);
     return response.data;
   }
 
   public async createPost(post: CreatePostRequest): Promise<Post> {
-    const response: AxiosResponse<Post> = await this.api.post('/posts', post);
+    const response = await this.api.post<Post>('/posts', post);
     return response.data;
   }
 
   public async updatePost(id: string, post: UpdatePostRequest): Promise<Post> {
-    const response: AxiosResponse<Post> = await this.api.put(`/posts/${id}`, post);
+    const response = await this.api.put<Post>(`/posts/${id}`, post);
     return response.data;
   }
 
@@ -166,23 +171,26 @@ class ApiService {
     size?: number;
     sort?: string;
   }): Promise<Post[]> {
-    const response: AxiosResponse<Post[]> = await this.api.get('/posts/drafts', { params });
+    const response = await this.api.get<Post[]>('/posts/drafts', { params });
     return response.data;
   }
 
-  // Categories endpoints
+  // --- Categories ---
   public async getCategories(): Promise<Category[]> {
-    const response: AxiosResponse<Category[]> = await this.api.get('/categories');
+    const response = await this.api.get<Category[]>('/categories');
     return response.data;
   }
 
   public async createCategory(name: string): Promise<Category> {
-    const response: AxiosResponse<Category> = await this.api.post('/categories', { name });
+    const response = await this.api.post<Category>('/categories', { name });
     return response.data;
   }
 
   public async updateCategory(id: string, name: string): Promise<Category> {
-    const response: AxiosResponse<Category> = await this.api.put(`/categories/${id}`, { id, name });
+    const response = await this.api.put<Category>(`/categories/${id}`, {
+      id,
+      name,
+    });
     return response.data;
   }
 
@@ -190,14 +198,14 @@ class ApiService {
     await this.api.delete(`/categories/${id}`);
   }
 
-  // Tags endpoints
+  // --- Tags ---
   public async getTags(): Promise<Tag[]> {
-    const response: AxiosResponse<Tag[]> = await this.api.get('/tags');
+    const response = await this.api.get<Tag[]>('/tags');
     return response.data;
   }
 
   public async createTags(names: string[]): Promise<Tag[]> {
-    const response: AxiosResponse<Tag[]> = await this.api.post('/tags', { names });
+    const response = await this.api.post<Tag[]>('/tags', { names });
     return response.data;
   }
 
@@ -206,5 +214,4 @@ class ApiService {
   }
 }
 
-// Export a singleton instance
 export const apiService = ApiService.getInstance();
