@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,17 +21,18 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: |
           cd frontend
           npm install
 
-      - name: Build frontend
+      - name: Inject VITE_API_BASE_URL and build frontend
         run: |
+          echo "window.env = { VITE_API_BASE_URL: '${{ secrets.VITE_API_BASE_URL }}' };" > frontend/dist/env.js
           cd frontend
           npm run build
 
-      - name: Upload build artifacts
+      - name: Upload frontend build artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
@@ -40,8 +41,8 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Apply (Frontend)
-        working-directory: ./infra
+      - name: Terraform Apply - Frontend Infra Only
+        working-directory: ./infra-frontend
         run: |
           terraform init
           terraform apply -auto-approve
