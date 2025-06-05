@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Card, 
+import {
+  Card,
   CardHeader,
   CardBody,
   Button,
@@ -39,23 +39,24 @@ const DraftsPage: React.FC = () => {
   }, [page, sortBy]);
 
   return (
-    <div className="max-w-4xl mx-auto px-4">
-      <Card>
-        <CardHeader className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">My Drafts</h1>
+    <div className="max-w-6xl mx-auto px-4 space-y-6">
+      <Card className="bg-white/60 dark:bg-black/30 backdrop-blur-md shadow-2xl rounded-3xl border border-violet-200 dark:border-violet-500">
+        <CardHeader className="flex justify-between items-center pb-2">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">📝 My Drafts</h1>
           <Button
             as={Link}
             to="/posts/new"
             color="primary"
             startContent={<Plus size={16} />}
+            className="bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow-md hover:scale-[1.03] transition-transform"
           >
             New Post
           </Button>
         </CardHeader>
 
-        <CardBody>
+        <CardBody className="space-y-4">
           {error && (
-            <div className="mb-4 p-4 text-red-500 bg-red-50 rounded-lg">
+            <div className="p-4 text-red-500 bg-red-50 rounded-lg">
               {error}
             </div>
           )}
@@ -70,15 +71,15 @@ const DraftsPage: React.FC = () => {
             onSortChange={setSortBy}
           />
 
-          {drafts?.length === 0 && !loading && (
-            <div className="text-center py-8 text-default-500">
-              <p>You don't have any draft posts yet.</p>
+          {!loading && drafts?.length === 0 && (
+            <div className="text-center py-10 text-neutral-500 dark:text-neutral-400">
+              <p className="text-lg mb-4">You don't have any draft posts yet.</p>
               <Button
                 as={Link}
                 to="/posts/new"
                 color="primary"
                 variant="flat"
-                className="mt-4"
+                className="bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow hover:scale-105 transition"
               >
                 Create Your First Post
               </Button>
