@@ -8,7 +8,7 @@ export default defineConfig(() => {
     server: {
       proxy: {
         '/api': {
-          target: "https://blog-platform-api.azurewebsites.net/",
+          target: "https://blog-app-latest-1.onrender.com/",
           changeOrigin: true,
           secure: false,
         },
