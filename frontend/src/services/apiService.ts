@@ -75,7 +75,8 @@ class ApiService {
   private static instance: ApiService;
 
   private constructor() {
-    const baseURL = "https://blog-platform-api.azurewebsites.net/api/v1";
+    // const baseURL = "https://blog-platform-api.azurewebsites.net/api/v1";
+    const baseURL = "https://blog-app-latest-1.onrender.com/api/v1";
 
     this.api = axios.create({
       baseURL,
