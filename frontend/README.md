@@ -1,50 +1,57 @@
-# React + TypeScript + Vite
+# Blog Platform frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 18 + TypeScript single-page client built with Vite, NextUI, Tailwind CSS, Axios, TipTap, DOMPurify, Framer Motion, and React Router.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+The client normally starts on <http://localhost:5173>.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+The current API base URL is hard-coded in `src/services/apiService.ts` to the deployed Render backend. For local full-stack work, change it to `http://localhost:8080/api/v1`. The proxy in `vite.config.ts` only applies when requests use a relative `/api` URL.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+## Commands
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start Vite development server |
+| `npm run build` | Type-check and create `dist/` |
+| `npm run lint` | Run ESLint |
+| `npm run preview` | Serve the production build locally |
+| `npm run clean` | Remove build/dependency artifacts and npm cache |
+
+## Application structure
+
+- `src/App.tsx`: providers, routing, route protection, and theme state
+- `src/components/AuthContext.tsx`: login/logout and token state
+- `src/components/NavBar.tsx`: navigation and authenticated actions
+- `src/components/PostForm.tsx`: TipTap post editor
+- `src/components/PostList.tsx`: post summaries, sorting UI, and pagination UI
+- `src/pages/`: route-level screens
+- `src/services/apiService.ts`: API types and Axios client
+
+## Authentication behavior
+
+The JWT is stored in `localStorage`. An Axios interceptor adds it to outgoing requests. Any `401` clears the token and redirects to `/login`. On refresh, the presence of a token is treated as authenticated; the client does not validate it until an API call fails because the backend has no profile/session endpoint.
+
+## Known integration gaps
+
+- `VITE_API_BASE_URL` is not implemented.
+- Category editing calls `PUT /categories/{id}`, which the backend does not provide.
+- UI pagination and sorting change local state, but backend list responses are not paginated or sorted by request parameters.
+- Post rendering allows fewer HTML tags than the editor produces, so headings and lists disappear on display.
+- The authenticated user's profile is never loaded, leaving the navbar avatar/name empty.
+- There is no frontend automated test suite.
+
+## Production build
+
+```bash
+npm run lint
+npm run build
+npm run preview
 ```
+
+Vite outputs static assets to `dist/`. Azure Terraform uploads those files to the storage account `$web` container; build the frontend before running Terraform apply when the blob resources are in scope.
